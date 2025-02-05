@@ -64,7 +64,7 @@ async def tng(ctx):
     if os.path.exists(image_path):
         await ctx.send(file=discord.File(image_path))
     else:
-        await ctx.send("⚠️ Image not found!")
+        pass
 
     # Delete the command message
     await ctx.message.delete()
