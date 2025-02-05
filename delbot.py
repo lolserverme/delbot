@@ -60,13 +60,12 @@ async def hello(ctx):
 @bot.command()
 @commands.has_permissions(administrator=True)  # Restrict to admins
 async def tng(ctx):
-    # Replace with a permanent Discord image link
-    image_url = "https://cdn.discordapp.com/attachments/1335844767317233725/1336505367340912742/TNG.jpg"
+    image_url = "https://raw.githubusercontent.com/lolserverme/delbot/main/TNG.jpg"  # GitHub-hosted image
 
-    embed = discord.Embed(title="TNG Image", color=0x00ff00)
-    embed.set_image(url=image_url)
+    # Send the image URL directly
+    await ctx.send(image_url)
 
-    await ctx.send(embed=embed)
+    # Delete the command message
     await ctx.message.delete()
 
 # New Command: "?myr <number>" multiplies the number by 8.5
