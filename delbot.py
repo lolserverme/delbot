@@ -60,11 +60,10 @@ async def hello(ctx):
 @bot.command()
 @commands.has_permissions(administrator=True)  # Restrict to admins
 async def tng(ctx):
-    image_path = "https://raw.githubusercontent.com/lolserverme/delbot/main/TNG.jpg"  # Replace with the name of your uploaded image
-    if os.path.exists(image_path):
-        await ctx.send(file=discord.File(image_path))
-    else:
-        pass
+    image_url = "https://raw.githubusercontent.com/lolserverme/delbot/main/TNG.jpg"  # GitHub-hosted image
+
+    # Send the image URL directly
+    await ctx.send(image_url)
 
     # Delete the command message
     await ctx.message.delete()
@@ -143,5 +142,5 @@ async def cal(ctx, start_level: int, end_level: int):
         price_twd = math.ceil(price_rm * 8.5)
         await ctx.send(f"代刷从等级 {start_level} 到等级 {end_level} 的总价格是: RM {price_rm} (台币 {price_twd})")
 
-# Run the bot using the token from Replit secrets
+# Run the bot using the token from Railway secrets
 bot.run(os.getenv("DISCORD_TOKEN"))
