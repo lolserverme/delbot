@@ -60,7 +60,7 @@ async def hello(ctx):
 @bot.command()
 @commands.has_permissions(administrator=True)  # Restrict to admins
 async def tng(ctx):
-    image_path = "TNG.jpg"  # Replace with the name of your uploaded image
+    image_path = "https://raw.githubusercontent.com/lolserverme/delbot/main/TNG.jpg"  # Replace with the name of your uploaded image
     if os.path.exists(image_path):
         await ctx.send(file=discord.File(image_path))
     else:
