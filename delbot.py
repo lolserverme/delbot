@@ -60,7 +60,7 @@ async def hello(ctx):
 @bot.command()
 @commands.has_permissions(administrator=True)  # Restrict to admins
 async def tng(ctx):
-    image_url = "https://raw.githubusercontent.com/lolserverme/delbot/main/TNG.jpg"  # GitHub-hosted image
+    image_url = "https://media.discordapp.net/attachments/1335844767317233725/1336505367340912742/TNG.jpg?ex=67a40d1e&is=67a2bb9e&hm=bf8287d527ba4c222bf9bfd6420da7515d24bf54bec93491862cc5f0fb06750e&=&format=webp&width=484&height=646"  # GitHub-hosted image
 
     # Send the image URL directly
     await ctx.send(image_url)
