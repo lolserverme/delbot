@@ -70,6 +70,7 @@ async def cal(ctx, start_level: int, end_level: int):
         await ctx.send(f"代刷从等级 {start_level} 到等级 {end_level} 的总价格是: RM {price_rm} (台币 {price_twd})")
 
 @bot.command()
+@commands.has_permissions(administrator=True)  # Only admins can access this command
 async def id(ctx):
     await ctx.send("""代刷 - DeL
 名字/id = 
@@ -78,6 +79,7 @@ async def id(ctx):
     await ctx.message.delete()
 
 @bot.command()
+@commands.has_permissions(administrator=True)  # Only admins can access this command
 async def req(ctx):
     await ctx.send("""====代刷等级需求==== DeL 
 1 - 账号必须要拥有2x经验通行证 
@@ -165,4 +167,4 @@ async def doneds(ctx, member: discord.Member, image: discord.Attachment):
     # Delete the command message
     await ctx.message.delete()
 
-bot.run(os.getenv("DISCORD_TOKEN"))
+bot.run(os.getenv("DISCORD_TOKEN
