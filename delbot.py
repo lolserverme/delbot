@@ -86,8 +86,11 @@ async def req(ctx):
 
 @bot.command()
 @commands.has_permissions(manage_channels=True)
-async def paid(ctx, amount: float):
-    new_name = f"paid - {amount}"
+async def paid(ctx, amount: float, *, text: str = ""):
+    # Convert to integer if the amount is a whole number
+    formatted_amount = int(amount) if amount.is_integer() else amount
+    new_name = f"paid - {formatted_amount} {text}".strip()
+    
     try:
         await ctx.channel.edit(name=new_name)
         await ctx.send(f"✅ 频道名称已更改为: {new_name}")
@@ -95,6 +98,7 @@ async def paid(ctx, amount: float):
         await ctx.send("⚠️ 我没有权限更改频道名称！")
     except discord.HTTPException:
         await ctx.send("⚠️ 发生错误，无法更改频道名称！")
+    
     await ctx.message.delete()
 
 bot.run(os.getenv("DISCORD_TOKEN"))
