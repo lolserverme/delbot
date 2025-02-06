@@ -1,6 +1,7 @@
 import discord
 import os
 import math
+import asyncio
 from discord.ext import commands
 
 # Enable bot intents
@@ -14,7 +15,7 @@ bot = commands.Bot(command_prefix="?", intents=intents)
 # Price calculation function
 def calculate_price(start_level, end_level):
     if start_level < 1 or end_level > 1000 or start_level >= end_level:
-        return "\u8f93\u5165\u7684\u7b49\u7ea7\u8303\u56f4\u65e0\u6548\uff0c\u8bf7\u68c0\u67e5\u540e\u91cd\u65b0\u8f93\u5165\uff01"
+        return "\u8f93\u5165\u7684\u7b49\u7ea7\u8303\u56f4\u65e0\u6548，\u8bf7\u68c0\u67e5\u540e\u91cd\u65b0\u8f93\u5165！"
     
     total_price = 0
     if start_level < 300:
@@ -86,8 +87,10 @@ async def req(ctx):
 
 @bot.command()
 @commands.has_permissions(manage_channels=True)
+@commands.cooldown(1, 10, commands.BucketType.channel)  # 1 use per 10 seconds per channel
 async def paid(ctx, amount: float, *, text: str = ""):
     try:
+        await asyncio.sleep(1)  # Small delay to avoid immediate rate limit
         formatted_amount = int(amount) if amount.is_integer() else amount
         new_name = f"paid - {formatted_amount} {text}".strip()
         await ctx.channel.edit(name=new_name)
