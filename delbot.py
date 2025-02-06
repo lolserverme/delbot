@@ -117,5 +117,14 @@ async def id(ctx):
 !! 随时准备给验证码哦""")
     await ctx.message.delete()
 
+# New Command: "?req" sends leveling requirements and deletes the command
+@bot.command()
+async def req(ctx):
+    await ctx.send("""====代刷等级需求==== DeL 
+1 - 账号必须要拥有2x经验通行证 
+2 - lvl1-500 要有rod of the depth(深渊杆) + clever(聪明)附魔 
+3 - lvl500-1000 要有nolife + clever(聪明)附魔""")
+    await ctx.message.delete()
+
 # Run the bot using the token from Railway secrets
 bot.run(os.getenv("DISCORD_TOKEN"))
