@@ -111,10 +111,10 @@ async def cal(ctx, start_level: int, end_level: int):
 # New Command: "?id" prints predefined text
 @bot.command()
 async def id(ctx):
-    await ctx.send("""<代刷 - DeL
+    await ctx.send("""代刷 - DeL
 名字/id = 
 密码/pass = 
-!! 随时准备给验证码哦>""")
+!! 随时准备给验证码哦""")
 
 # Run the bot using the token from Railway secrets
 bot.run(os.getenv("DISCORD_TOKEN"))
