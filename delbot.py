@@ -108,13 +108,14 @@ async def cal(ctx, start_level: int, end_level: int):
         price_twd = math.ceil(price_rm * 8.5)
         await ctx.send(f"代刷从等级 {start_level} 到等级 {end_level} 的总价格是: RM {price_rm} (台币 {price_twd})")
 
-# New Command: "?id" prints predefined text
+# New Command: "?id" prints predefined text and deletes the command
 @bot.command()
 async def id(ctx):
     await ctx.send("""代刷 - DeL
 名字/id = 
 密码/pass = 
 !! 随时准备给验证码哦""")
+    await ctx.message.delete()
 
 # Run the bot using the token from Railway secrets
 bot.run(os.getenv("DISCORD_TOKEN"))
