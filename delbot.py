@@ -88,13 +88,18 @@ async def req(ctx):
 @bot.command()
 @commands.has_permissions(manage_channels=True)
 @commands.cooldown(1, 10, commands.BucketType.channel)  # 1 use per 10 seconds per channel
-async def paid(ctx, amount: float, *, text: str = ""):
+async def paid(ctx, amount: str, *, text: str = ""):
     try:
+        amount = amount.replace(",", "").strip()  # Remove commas and extra spaces
+        amount = float(amount)  # Convert to float
+        
         await asyncio.sleep(1)  # Small delay to avoid immediate rate limit
         formatted_amount = int(amount) if amount.is_integer() else amount
         new_name = f"paid - {formatted_amount} {text}".strip()
+        
         await ctx.channel.edit(name=new_name)
         await ctx.send(f"✅ 频道名称已更改为: {new_name}")
+    
     except ValueError:
         await ctx.send("⚠️ 请输入有效的数字作为金额！")
     except discord.Forbidden:
@@ -103,5 +108,6 @@ async def paid(ctx, amount: float, *, text: str = ""):
         await ctx.send("⚠️ 发生错误，无法更改频道名称！")
     
     await ctx.message.delete()
+
 
 bot.run(os.getenv("DISCORD_TOKEN"))
