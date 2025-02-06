@@ -14,7 +14,7 @@ bot = commands.Bot(command_prefix="?", intents=intents)
 # Price calculation function
 def calculate_price(start_level, end_level):
     if start_level < 1 or end_level > 1000 or start_level >= end_level:
-        return "输入的等级范围无效，请检查后重新输入！"
+        return "\u8f93\u5165\u7684\u7b49\u7ea7\u8303\u56f4\u65e0\u6548\uff0c\u8bf7\u68c0\u67e5\u540e\u91cd\u65b0\u8f93\u5165\uff01"
     
     total_price = 0
     if start_level < 300:
@@ -87,13 +87,13 @@ async def req(ctx):
 @bot.command()
 @commands.has_permissions(manage_channels=True)
 async def paid(ctx, amount: float, *, text: str = ""):
-    # Convert to integer if the amount is a whole number
-    formatted_amount = int(amount) if amount.is_integer() else amount
-    new_name = f"paid - {formatted_amount} {text}".strip()
-    
     try:
+        formatted_amount = int(amount) if amount.is_integer() else amount
+        new_name = f"paid - {formatted_amount} {text}".strip()
         await ctx.channel.edit(name=new_name)
         await ctx.send(f"✅ 频道名称已更改为: {new_name}")
+    except ValueError:
+        await ctx.send("⚠️ 请输入有效的数字作为金额！")
     except discord.Forbidden:
         await ctx.send("⚠️ 我没有权限更改频道名称！")
     except discord.HTTPException:
