@@ -109,5 +109,58 @@ async def paid(ctx, amount: str, *, text: str = ""):
     
     await ctx.message.delete()
 
+# New Command: "?done @mention"
+@bot.command()
+@commands.has_permissions(administrator=True)  # Restrict to admins
+async def done(ctx, member: discord.Member, image: discord.Attachment):
+    # Role name you want to assign to the mentioned user
+    role_name = "Buyer买家"  # Replace with the role name you want to assign
+
+    # Get the role object by name
+    role = discord.utils.get(ctx.guild.roles, name=role_name)
+
+    # Check if the role exists
+    if not role:
+        await ctx.send(f"⚠️ Role '{role_name}' not found!")
+        return
+
+    # Assign the role to the mentioned user
+    await member.add_roles(role)
+
+    # Send confirmation message
+    await ctx.send(f"已经购买通行证/代送了 {member.mention},\n 您已获取 '{role_name}' 称号，请到 https://discord.com/channels/1320960342318387292/1335820101437624414 vouch @DeL .")
+
+    # Send the image that was uploaded
+    await ctx.send(f"{image.url}")
+
+    # Delete the command message
+    await ctx.message.delete()
+
+# New Command: "?doneds @mention" (same behavior as ?done)
+@bot.command()
+@commands.has_permissions(administrator=True)  # Restrict to admins
+async def doneds(ctx, member: discord.Member, image: discord.Attachment):
+    # Role name you want to assign to the mentioned user (you can change this role name)
+    role_name = "Buyer买家"  # Replace with the role name for this use case
+
+    # Get the role object by name
+    role = discord.utils.get(ctx.guild.roles, name=role_name)
+
+    # Check if the role exists
+    if not role:
+        await ctx.send(f"⚠️ Role '{role_name}' not found!")
+        return
+
+    # Assign the role to the mentioned user
+    await member.add_roles(role)
+
+    # Send confirmation message
+    await ctx.send(f"已经完成代刷了，现在可以登录账号查看了 {member.mention}，\n您已获取 '{role_name}' 称号，请到 https://discord.com/channels/1320960342318387292/1335820101437624414 vouch @DeL .")
+
+    # Send the image that was uploaded
+    await ctx.send(f"{image.url}")
+
+    # Delete the command message
+    await ctx.message.delete()
 
 bot.run(os.getenv("DISCORD_TOKEN"))
