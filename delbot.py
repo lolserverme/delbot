@@ -167,4 +167,4 @@ async def doneds(ctx, member: discord.Member, image: discord.Attachment):
     # Delete the command message
     await ctx.message.delete()
 
-bot.run(os.getenv("DISCORD_TOKEN
+bot.run(os.getenv("DISCORD_TOKEN"))
