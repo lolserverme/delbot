@@ -130,8 +130,9 @@ async def done(ctx, member: discord.Member, image: discord.Attachment):
     # Send confirmation message
     await ctx.send(f"已经购买通行证/代送了 {member.mention},\n 您已获取 '{role_name}' 称号，请到 https://discord.com/channels/1320960342318387292/1335820101437624414 vouch @DeL .")
 
-    # Send the image that was uploaded
-    await ctx.send(f"{image.url}")
+    # Process and send the image that was uploaded
+    image_file = await image.to_file()
+    await ctx.send(file=image_file)
 
     # Delete the command message
     await ctx.message.delete()
@@ -157,8 +158,9 @@ async def doneds(ctx, member: discord.Member, image: discord.Attachment):
     # Send confirmation message
     await ctx.send(f"已经完成代刷了，现在可以登录账号查看了 {member.mention}，\n您已获取 '{role_name}' 称号，请到 https://discord.com/channels/1320960342318387292/1335820101437624414 vouch @DeL .")
 
-    # Send the image that was uploaded
-    await ctx.send(f"{image.url}")
+    # Process and send the image that was uploaded
+    image_file = await image.to_file()
+    await ctx.send(file=image_file)
 
     # Delete the command message
     await ctx.message.delete()
