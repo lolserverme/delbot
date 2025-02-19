@@ -110,7 +110,57 @@ async def paid(ctx, amount: str, *, text: str = ""):
         await ctx.send("⚠️ 发生错误，无法更改频道名称！")
     
     await ctx.message.delete()
+# Load or initialize balances
+def load_balances():
+    try:
+        with open("balances.json", "r") as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
 
+def save_balances():
+    with open("balances.json", "w") as f:
+        json.dump(balances, f, indent=4)
+
+balances = load_balances()
+
+# Command to add balance
+@bot.command()
+@commands.has_permissions(administrator=True)
+async def add(ctx, amount: float, member: discord.Member):
+    user_id = str(member.id)
+    
+    if user_id not in balances:
+        balances[user_id] = 0
+    
+    balances[user_id] += amount
+    save_balances()
+    await ctx.send(f"✅ {member.mention} 的余额增加了 RM {amount}. 当前余额: RM {balances[user_id]}")
+
+# Command to check balance
+@bot.command()
+async def balance(ctx, member: discord.Member = None):
+    if member is None:
+        member = ctx.author
+    
+    user_id = str(member.id)
+    balance = balances.get(user_id, 0)
+    await ctx.send(f"💰 {member.mention} 的当前余额: RM {balance}")
+
+# Command to deduct balance
+@bot.command()
+@commands.has_permissions(administrator=True)
+async def deduct(ctx, amount: float, member: discord.Member):
+    user_id = str(member.id)
+    
+    if user_id not in balances or balances[user_id] < amount:
+        await ctx.send(f"⚠️ {member.mention} 的余额不足！")
+        return
+    
+    balances[user_id] -= amount
+    save_balances()
+    await ctx.send(f"✅ {member.mention} 的余额减少了 RM {amount}. 当前余额: RM {balances[user_id]}")
+    
 # New Command: "?done @mention"
 @bot.command()
 @commands.has_permissions(administrator=True)  # Restrict to admins
