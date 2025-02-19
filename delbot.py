@@ -2,6 +2,7 @@ import discord
 import os
 import math
 import asyncio
+import json
 from discord.ext import commands
 
 # Enable bot intents
