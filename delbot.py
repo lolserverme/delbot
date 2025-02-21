@@ -16,29 +16,25 @@ bot = commands.Bot(command_prefix="?", intents=intents)
 # Price calculation function
 def calculate_price(start_level, end_level):
     if start_level < 1 or end_level > 1000 or start_level >= end_level:
-        return "\u8f93\u5165\u7684\u7b49\u7ea7\u8303\u56f4\u65e0\u6548，\u8bf7\u68c0\u67e5\u540e\u91cd\u65b0\u8f93\u5165！"
+        return "\u8f93\u5165\u7684\u7b49\u7ea7\u8303\u56f4\u65e0\u6548\uff0c\u8bf7\u68c0\u67e5\u540e\u91cd\u65b0\u8f93\u5165\uff01"
     
     total_price = 0
     if start_level < 300:
         upper_bound = min(300, end_level)
-        total_price += (upper_bound - start_level) * 0.06
+        total_price += (upper_bound - start_level) * 0.05
         start_level = upper_bound
     if start_level < 600:
         upper_bound = min(600, end_level)
         total_price += (upper_bound - start_level) * 0.09
         start_level = upper_bound
-    if start_level < 750:
-        upper_bound = min(750, end_level)
-        total_price += (upper_bound - start_level) * 0.11
-        start_level = upper_bound
-    if start_level < 900:
-        upper_bound = min(900, end_level)
-        total_price += (upper_bound - start_level) * 0.13
+    if start_level < 800:
+        upper_bound = min(800, end_level)
+        total_price += (upper_bound - start_level) * 0.12
         start_level = upper_bound
     if start_level < 1000:
         upper_bound = min(1000, end_level)
-        total_price += (upper_bound - start_level) * 0.15
-
+        total_price += (upper_bound - start_level) * 0.14
+    
     return round(total_price, 2)
 
 @bot.event
@@ -69,7 +65,6 @@ async def cal(ctx, start_level: int, end_level: int):
     else:
         price_twd = math.ceil(price_rm * 8.5)
         await ctx.send(f"代刷从等级 {start_level} 到等级 {end_level} 的总价格是: RM {price_rm} (台币 {price_twd})")
-
 @bot.command()
 @commands.has_permissions(administrator=True)  # Only admins can access this command
 async def id(ctx):
