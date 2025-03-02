@@ -123,15 +123,68 @@ balances = load_balances()
 # Command to add balance
 @bot.command()
 @commands.has_permissions(administrator=True)
-async def add(ctx, amount: float, member: discord.Member):
+async def add(ctx, currency: str, amount: float, member: discord.Member):
     user_id = str(member.id)
-    
+
+    # Ensure user balance structure exists
     if user_id not in balances:
-        balances[user_id] = 0
-    
-    balances[user_id] += amount
+        balances[user_id] = {"MYR": 0, "TWD": 0}
+
+    # Check the currency type
+    if currency.lower() == "my":  # Adding MYR (Malaysian Ringgit)
+        balances[user_id]["MYR"] += amount
+        balances[user_id]["TWD"] += amount * 8.5  # Convert and add to TWD
+
+    elif currency.lower() == "tw":  # Adding TWD (Taiwan Dollar)
+        balances[user_id]["TWD"] += amount
+        balances[user_id]["MYR"] += amount / 8.5  # Convert and add to MYR
+
+    else:
+        await ctx.send("⚠️ 请输入正确的货币类型: `my` (马币) 或 `tw` (台币)")
+        return
+
+    # Save updated balances
     save_balances()
-    await ctx.send(f"✅ {member.mention} 的余额增加了 RM {amount}. 当前余额: RM {balances[user_id]}")
+
+    # Send confirmation message
+    await ctx.send(f"✅ {member.mention} 的余额增加了 {currency.upper()} {amount}。\n"
+                   f"📊 当前余额: RM {balances[user_id]['MYR']:.2f} | 台币 {balances[user_id]['TWD']:.2f}")
+
+# Command to deduct balance
+@bot.command()
+@commands.has_permissions(administrator=True)
+async def deduct(ctx, currency: str, amount: float, member: discord.Member):
+    user_id = str(member.id)
+
+    # Ensure user balance structure exists
+    if user_id not in balances:
+        balances[user_id] = {"MYR": 0, "TWD": 0}
+
+    # Check the currency type
+    if currency.lower() == "my":  # Deduct MYR (Malaysian Ringgit)
+        if balances[user_id]["MYR"] < amount:
+            await ctx.send(f"⚠️ {member.mention} 的 RM 余额不足！")
+            return
+        balances[user_id]["MYR"] -= amount
+        balances[user_id]["TWD"] -= amount * 8.5  # Convert and deduct from TWD
+
+    elif currency.lower() == "tw":  # Deduct TWD (Taiwan Dollar)
+        if balances[user_id]["TWD"] < amount:
+            await ctx.send(f"⚠️ {member.mention} 的 台币 余额不足！")
+            return
+        balances[user_id]["TWD"] -= amount
+        balances[user_id]["MYR"] -= amount / 8.5  # Convert and deduct from MYR
+
+    else:
+        await ctx.send("⚠️ 请输入正确的货币类型: `my` (马币) 或 `tw` (台币)")
+        return
+
+    # Save updated balances
+    save_balances()
+
+    # Send confirmation message
+    await ctx.send(f"✅ {member.mention} 的余额减少了 {currency.upper()} {amount}。\n"
+                   f"📊 当前余额: RM {balances[user_id]['MYR']:.2f} | 台币 {balances[user_id]['TWD']:.2f}")
 
 # Command to check balance
 @bot.command()
@@ -140,22 +193,11 @@ async def balance(ctx, member: discord.Member = None):
         member = ctx.author
     
     user_id = str(member.id)
-    balance = balances.get(user_id, 0)
-    await ctx.send(f"💰 {member.mention} 的当前余额: RM {balance}")
+    balance_myr = balances.get(user_id, {}).get("MYR", 0)
+    balance_twd = balances.get(user_id, {}).get("TWD", 0)
 
-# Command to deduct balance
-@bot.command()
-@commands.has_permissions(administrator=True)
-async def deduct(ctx, amount: float, member: discord.Member):
-    user_id = str(member.id)
-    
-    if user_id not in balances or balances[user_id] < amount:
-        await ctx.send(f"⚠️ {member.mention} 的余额不足！")
-        return
-    
-    balances[user_id] -= amount
-    save_balances()
-    await ctx.send(f"✅ {member.mention} 的余额减少了 RM {amount}. 当前余额: RM {balances[user_id]}")
+    await ctx.send(f"💰 {member.mention} 的当前余额:\n"
+                   f"📌 RM {balance_myr:.2f} | 台币 {balance_twd:.2f}")
     
 # New Command: "?done @mention"
 @bot.command()
@@ -212,5 +254,19 @@ async def doneds(ctx, member: discord.Member, image: discord.Attachment):
 
     # Delete the command message
     await ctx.message.delete()
+    
+@bot.command()
+@commands.has_permissions(administrator=True)  # Restrict to admins only
+async def twpay(ctx):
+    message = """中信 - 网银代号822  
+=账号023540541307  
+------------------------  
+国泰 - 网银代号013  
+=账号060506209938  
+
+# !缴费后请把发票/截图拍来给我 (没有发票概算为还没缴费)"""
+    
+    await ctx.send(message)
+    await ctx.message.delete()  # Deletes the command message
 
 bot.run(os.getenv("DISCORD_TOKEN"))
