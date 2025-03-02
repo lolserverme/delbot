@@ -267,6 +267,9 @@ async def twpay(ctx):
 # !缴费后请把发票/截图拍来给我 (没有发票概算为还没缴费)"""
     
     await ctx.send(message)
-    await ctx.message.delete()  # Deletes the command message
+    
+    await asyncio.sleep(1)  # Add a small delay (1 second)
+    await ctx.message.delete()  # Delete the command message after the delay
+
 
 bot.run(os.getenv("DISCORD_TOKEN"))
