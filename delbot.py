@@ -271,5 +271,58 @@ async def twpay(ctx):
     await asyncio.sleep(1)  # Add a small delay (1 second)
     await ctx.message.delete()  # Delete the command message after the delay
 
+# Load or initialize time data
+def load_time_data():
+    try:
+        with open("time_data.json", "r") as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
 
+def save_time_data():
+    with open("time_data.json", "w") as f:
+        json.dump(time_data, f, indent=4)
+
+# Initialize time data
+time_data = load_time_data()
+
+# Add available time
+@bot.command()
+@commands.has_permissions(administrator=True)
+async def addtime(ctx, hours: int, member: discord.Member):
+    user_id = str(member.id)
+    
+    if user_id not in time_data:
+        time_data[user_id] = 0
+
+    time_data[user_id] += hours
+    save_time_data()
+
+    await ctx.send(f"✅ {member.mention} 已增加 {hours} 小时的挂机时间。\n🕒 当前可用时间: {time_data[user_id]} 小时")
+
+# Deduct available time
+@bot.command()
+@commands.has_permissions(administrator=True)
+async def deducttime(ctx, hours: int, member: discord.Member):
+    user_id = str(member.id)
+
+    if user_id not in time_data or time_data[user_id] <= 0:
+        await ctx.send(f"⚠️ {member.mention} 当前没有可用的挂机时间！")
+        return
+
+    time_data[user_id] = max(0, time_data[user_id] - hours)
+    save_time_data()
+
+    await ctx.send(f"✅ {member.mention} 已扣除 {hours} 小时的挂机时间。\n🕒 当前可用时间: {time_data[user_id]} 小时")
+
+# Check available time
+@bot.command()
+async def avatime(ctx, member: discord.Member = None):
+    if member is None:
+        member = ctx.author
+
+    user_id = str(member.id)
+    available_hours = time_data.get(user_id, 0)
+
+    await ctx.send(f"🕒 {member.mention} 当前的可用挂机时间为: {available_hours} 小时")
 bot.run(os.getenv("DISCORD_TOKEN"))
