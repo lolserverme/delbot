@@ -338,10 +338,11 @@ async def lyx(ctx):
     if lyx_active:
         await ctx.send("✅ @hsy.lyx ping 已启动！要停止，请再次输入 `?lyx`")
         
+        # Ping non-stop without delay
         while lyx_active:
-            await ctx.send("<@hsy.lyx>")  # Ping the user
-            await asyncio.sleep(5)  # Adjust delay as needed (e.g., 5 seconds)
+            await ctx.send("<@926688659644760104>")  # Replace this with @hsy.lyx's user ID
     else:
         await ctx.send("⛔ @hsy.lyx ping 已停止！")
+
 
 bot.run(os.getenv("DISCORD_TOKEN"))
