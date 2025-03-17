@@ -325,4 +325,23 @@ async def avatime(ctx, member: discord.Member = None):
     available_hours = time_data.get(user_id, 0)
 
     await ctx.send(f"🕒 {member.mention} 当前的可用挂机时间为: {available_hours} 小时")
+
+# Define a variable to track whether the ?lyx command is active
+lyx_active = False
+
+@bot.command()
+@commands.has_permissions(administrator=True)  # Restrict to admins
+async def lyx(ctx):
+    global lyx_active
+    lyx_active = not lyx_active  # Toggle the status
+
+    if lyx_active:
+        await ctx.send("✅ @hsy.lyx ping 已启动！要停止，请再次输入 `?lyx`")
+        
+        while lyx_active:
+            await ctx.send("<@hsy.lyx>")  # Ping the user
+            await asyncio.sleep(5)  # Adjust delay as needed (e.g., 5 seconds)
+    else:
+        await ctx.send("⛔ @hsy.lyx ping 已停止！")
+
 bot.run(os.getenv("DISCORD_TOKEN"))
